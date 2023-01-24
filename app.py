@@ -134,7 +134,7 @@ for i, state in enumerate(df['state'].unique()):
     # Plot the data
     ax.plot(df_state[count_var], df_state[get_yaxis_var(yaxis_select)], color=colors[i], label=state)
     ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.TUESDAY))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%y'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
     if get_yaxis_var(yaxis_select) == 'count':
         ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
     else:
