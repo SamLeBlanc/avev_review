@@ -84,7 +84,7 @@ df = df.groupby(['state',count_var]).agg({'count':"sum"}).reset_index()
 options = st.sidebar.multiselect("Filter by State", df.state.unique(), [s for s in ['GA','MI','PA','WI'] if s in df.state.unique()])
 df = df[df.state.isin(options)]
 
-start_date = st.sidebar.date_input("Start Date", datetime.date(2022, 10, 1))
+start_date = st.sidebar.date_input("Start Date", datetime.date(2022, 9, 1))
 end_date = st.sidebar.date_input("End Date", datetime.date(2022, 11, 8))
 
 yaxis_select = st.sidebar.selectbox("Y-axis", ('Percent of Total Votes (NYT)',f'Percent of {tally} (AV2EV)','Record Count (AV2EV)'))
