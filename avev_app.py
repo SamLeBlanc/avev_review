@@ -19,11 +19,6 @@ import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-import os
-from dotenv import load_dotenv
-
-import redshift_connector
-
 import warnings
 warnings.filterwarnings('ignore')
 
