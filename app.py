@@ -77,7 +77,7 @@ def get_tally_name(tally):
 
 count_var = get_tally_name(tally)
 
-df = pd.read_pickle(f'test.pkl')
+df = pd.read_pickle(f'df.pkl')
 
 df = df.groupby(['state',count_var]).agg({'count':"sum"}).reset_index()
 
