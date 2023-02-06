@@ -100,7 +100,22 @@ def format_dataframe(df, count_var, start_date, end_date, options):
 
     df = df[df.state.isin(options)]
 
+<<<<<<< HEAD
     df[count_var] = pd.to_datetime(df[count_var]).dt.date
+=======
+# Loop through each state and plot the data
+for i, state in enumerate(df['state'].unique()):
+    # Create a dataframe for each state
+    df_state = df[df['state'] == state]
+    # Plot the data
+    ax.plot(df_state[count_var], df_state[get_yaxis_var(yaxis_select)], color=colors[i], label=state)
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.TUESDAY))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
+    if get_yaxis_var(yaxis_select) == 'count':
+        ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
+    else:
+        ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}%'))
+>>>>>>> fac1dd17635a9fae791fdbdc25961ce22f5e91b2
 
     # Get cumulative sum of vote_dates by state and voted_date
     df = df.groupby(['state', count_var]).sum().groupby(level=0).cumsum().reset_index()
