@@ -3,5 +3,3 @@ pandas
 numpy
 matplotlib
 matplotlib-inline
-dotenv
-redshift_connector

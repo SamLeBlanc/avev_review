@@ -3,9 +3,9 @@ import redshift_connector
 import os
 import pandas as pd
 
-def main():
-    query = query_text()
-    query_redshift_to_pickle(query)
+# def main():
+#     query = query_text()
+#     query_redshift_to_pickle(query)
 
 def query_text():
     return ("""
@@ -58,5 +58,5 @@ def query_redshift_to_pickle(query):
     print("Done!\n")
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
