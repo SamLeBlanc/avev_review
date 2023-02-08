@@ -85,7 +85,7 @@ def create_chart(df, tally, count_var, yaxis_select, start_date, end_date):
             ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=2, byweekday=mdates.TUESDAY))
         else:
             ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=4, byweekday=mdates.TUESDAY))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%#d'))
 
         if yaxis_conversion[yaxis_select] == 'count':
             ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
