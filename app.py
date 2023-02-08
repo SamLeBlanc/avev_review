@@ -50,7 +50,7 @@ def streamlit_setup(df):
     start_date = st.sidebar.date_input("Start Date", datetime.date(2022, 10, 1))
     end_date = st.sidebar.date_input("End Date", datetime.date(2022, 11, 8))
 
-    yaxis_select = st.sidebar.selectbox("Y-axis", ('Percent of Total Votes',f'Percent of {tally} (AV2EV)','Record Count (AV2EV)'))
+    yaxis_select = st.sidebar.selectbox("Y-axis", ('Percent of (Estimated) Total Votes',f'Percent of {tally} (AV2EV)','Record Count (AV2EV)'))
 
     display_df = st.sidebar.checkbox('Display Chart Data')
 
@@ -67,7 +67,7 @@ def create_chart(df, tally, count_var, yaxis_select, start_date, end_date):
     yaxis_conversion = {
         'Record Count (AV2EV)' : 'count',
         f'Percent of {tally} (AV2EV)' : 'perc_avev_total',
-        'Percent of Total Votes' : 'perc_nyt_total',
+        'Percent of (Estimated) Total Votes' : 'perc_nyt_total',
     }
 
     # Loop through each state and plot the data
@@ -93,7 +93,7 @@ def create_chart(df, tally, count_var, yaxis_select, start_date, end_date):
             ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}%'))
 
     # Set the title and labels
-    ax.set_xlabel('Date')
+    ax.set_xlabel('Date (Tuesdays)')
     ax.set_ylabel(yaxis_select)
     ax.set_title(f'{tally} by State and Date')
 
@@ -141,7 +141,7 @@ def display_data(df, display_df, yaxis_select, count_var, tally):
     yaxis_conversion = {
         'Record Count (AV2EV)' : 'count',
         f'Percent of {tally} (AV2EV)' : 'perc_avev_total',
-        'Percent of Total Votes' : 'perc_nyt_total',
+        'Percent of (Estimated) Total Votes' : 'perc_nyt_total',
     }
 
     if display_df:
