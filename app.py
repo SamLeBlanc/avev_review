@@ -18,7 +18,7 @@ def main():
     df = pd.read_pickle(f'df.pkl')
     tally, count_var, options, start_date, end_date, yaxis_select, display_df = streamlit_setup(df)
     df = format_dataframe(df, count_var, start_date, end_date, options)
-    create_chart(df, tally, count_var, yaxis_select)
+    create_chart(df, tally, count_var, yaxis_select, start_date, end_date)
     display_data(df, display_df, yaxis_select, count_var, tally)
 
 def get_tally_variable_from_sidebar():
@@ -39,7 +39,9 @@ def streamlit_setup(df):
     st.markdown(f'''<style>.css-91z34k {{max-width: 65rem; padding:1rem}};</style>''', unsafe_allow_html=True)
     st.markdown(f'''<style>.css-1vq4p4l {{padding:1rem}};</style>''', unsafe_allow_html=True)
 
-    st.title('AVEV Date Review')
+    st.markdown('# AVEV Date Review')
+    st.markdown('##### Graphing the number of state-level AVEV actions over the 2022 General Election cycle.')
+    st.markdown('Use the sidebar (left) to adjust the settings, and contact Sam ([sleblanc@americavotes.org]()) with any questions or concerns.')
     st.sidebar.title('Settings')
     tally, count_var = get_tally_variable_from_sidebar()
 
@@ -54,7 +56,7 @@ def streamlit_setup(df):
 
     return tally, count_var, options, start_date, end_date, yaxis_select, display_df
 
-def create_chart(df, tally, count_var, yaxis_select):
+def create_chart(df, tally, count_var, yaxis_select, start_date, end_date):
 
     # Create a list of colors to use for each state
     colors = ['orangered', 'Goldenrod', 'Green', 'Blue', 'Lime', 'Maroon', 'Violet', 'Silver', 'Cyan', 'Pink', 'Orange', 'Gray', 'Yellow', 'Brown', 'Blue', 'Black']
@@ -74,8 +76,17 @@ def create_chart(df, tally, count_var, yaxis_select):
         df_state = df[df['state'] == state]
         # Plot the data
         ax.plot(df_state[count_var], df_state[yaxis_conversion[yaxis_select]], color=colors[i], label=state)
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.TUESDAY))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%y'))
+
+        days_between = abs((start_date - end_date).days)
+
+        if days_between < 90:
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.TUESDAY))
+        elif days_between < 150:
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=2, byweekday=mdates.TUESDAY))
+        else:
+            ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=4, byweekday=mdates.TUESDAY))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
+
         if yaxis_conversion[yaxis_select] == 'count':
             ax.yaxis.set_major_formatter(mpl.ticker.StrMethodFormatter('{x:,.0f}'))
         else:
