@@ -12,8 +12,6 @@ import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-import query_redshift
-
 def main():
     df = pd.read_pickle(f'df.pkl')
     tally, count_var, options, start_date, end_date, yaxis_select, display_df = streamlit_setup(df)
@@ -50,7 +48,7 @@ def streamlit_setup(df):
     start_date = st.sidebar.date_input("Start Date", datetime.date(2022, 10, 1))
     end_date = st.sidebar.date_input("End Date", datetime.date(2022, 11, 8))
 
-    yaxis_select = st.sidebar.selectbox("Y-axis", ('Percent of (Estimated) Total Votes',f'Percent of {tally} (AV2EV)','Record Count (AV2EV)'))
+    yaxis_select = st.sidebar.selectbox("Y-axis", ('Percent of Total Votes',f'Percent of {tally}','Record Count'))
 
     display_df = st.sidebar.checkbox('Display Chart Data')
 
@@ -65,9 +63,9 @@ def create_chart(df, tally, count_var, yaxis_select, start_date, end_date):
     fig, ax = plt.subplots()
 
     yaxis_conversion = {
-        'Record Count (AV2EV)' : 'count',
-        f'Percent of {tally} (AV2EV)' : 'perc_avev_total',
-        'Percent of (Estimated) Total Votes' : 'perc_nyt_total',
+        'Record Count' : 'count',
+        f'Percent of {tally}' : 'perc_avev_total',
+        'Percent of Total Votes' : 'perc_total',
     }
 
     # Loop through each state and plot the data
@@ -116,17 +114,34 @@ def format_dataframe(df, count_var, start_date, end_date, options):
     # Get cumulative sum of vote_dates by state and voted_date
     df = df.groupby(['state', count_var]).sum().groupby(level=0).cumsum().reset_index()
 
-    # Total number of votes, NYT
-    total_votes_nyt = { 'AZ': 2572097, 'CO': 2500130, 'FL': 7757859, 'GA': 3935924, 'ID': 590890, 'ME': 676819, 'MI': 4461925, 'MN': 2509632, 'MT': 495920, 'NC': 3771409, 'NH': 620511, 'NM': 712256, 'NV': 1020850, 'OH': 4131603, 'PA': 5368021, 'WI': 2647652 }
+    # Total number of votes
+    total_votes = {
+        'AZ': 2250213,
+        'CO': 2661687,
+        'FL': 8150109,
+        'GA': 4347341,
+        'ID': 607128,
+        'ME': 700453,
+        'MI': 4620408,
+        'MN': 2535274,
+        'MT': 488062,
+        'NC': 3766199,
+        'NH': 636743,
+        'NM': 739732,
+        'NV': 1057412,
+        'OH': 4411723,
+        'PA': 5657274,
+        'WI': 2749895
+    }
 
     total_avev = df.groupby('state')['count'].max().to_dict()
 
     # Join total_votes to df
-    df = df.join(pd.DataFrame.from_dict(total_votes_nyt, orient='index').reset_index().rename(columns={'index':'state', 0:'total_votes_nyt'}).set_index('state'), on='state')
+    df = df.join(pd.DataFrame.from_dict(total_votes, orient='index').reset_index().rename(columns={'index':'state', 0:'total_votes'}).set_index('state'), on='state')
 
     df = df.join(pd.DataFrame.from_dict(total_avev, orient='index').reset_index().rename(columns={'index':'state', 0:'total_avev'}).set_index('state'), on='state')
 
-    df['perc_nyt_total'] = 100*df['count']/df['total_votes_nyt']
+    df['perc_total'] = 100*df['count']/df['total_votes']
     df['perc_avev_total'] = 100*df['count']/df['total_avev']
 
     # Trim the dataframe to only include dates in Q4
@@ -139,9 +154,9 @@ def display_data(df, display_df, yaxis_select, count_var, tally):
     # Display dataframe powering plot if checkbox is checked
 
     yaxis_conversion = {
-        'Record Count (AV2EV)' : 'count',
-        f'Percent of {tally} (AV2EV)' : 'perc_avev_total',
-        'Percent of (Estimated) Total Votes' : 'perc_nyt_total',
+        'Record Count' : 'count',
+        f'Percent of {tally}' : 'perc_avev_total',
+        'Percent of Total Votes' : 'perc_total',
     }
 
     if display_df:
